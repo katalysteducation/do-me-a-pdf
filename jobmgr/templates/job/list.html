@@ -1,0 +1,16 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="content list">
+
+{% for job in object_list %}
+  <div class="single-line-list-item list-button md-surface md-real">
+    <span class="first-line">{{ job.name }}</span>
+
+    <a href="{% url 'job.view' job.pk %}"><span></span></a>
+  </div>
+{% empty %}
+  <span>No jobs</span>
+{% endfor %}
+
+</div>
+{% endblock %}

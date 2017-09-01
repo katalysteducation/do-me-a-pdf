@@ -1,0 +1,35 @@
+<!doctype html>
+<html class="md-light">
+<head>
+  <meta charset="utf-8">
+  <title>
+    {% block page_title %}
+      {{ title }}
+    {% endblock %}
+  </title>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'material.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+  {% block head %}
+  {% endblock %}
+</head>
+<body>
+  <header class="md-surface md-real">
+    {% if user.is_authenticated %}
+      <div class="title">
+        {% block header_title %}
+          {{ title }}
+        {% endblock %}
+      </div>
+      <div class="fill"></div>
+      <div class="user-info">
+        <span>Hello, {{ user.username }}</span>
+        <a href="{% url 'logout' %}">sign out</a>
+      </div>
+    {% endif %}
+  </header>
+
+  {% block content %}
+  {% endblock %}
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="content flow-column md-surface md-container">
+
+<span class="md-text md-text-caption">Job name</span>
+<span class="md-text md-text-title">{{ object.name }}</span>
+
+<span class="md-text md-text-caption divider">Job tasks</span>
+
+<div class="list">
+  {% for task in object.task_set.all %}
+    <div class="two-line-list-item">
+      <span class="first-line">{{ task.name }}</span>
+
+      {% if task.completed %}
+        <span class="second-line state-completed">completed</span>
+        <span class="topright-line">finished {{ task.finished }}</span>
+      {% elif task.failed %}
+        <span class="second-line state-failed">failed</span>
+        <span class="topright-line">started {{ task.started }}</span>
+        <span class="third-line">{{ task.message }}</span>
+      {% else %}
+        <span class="second-line state-running">running</span>
+        <span class="topright-line">started {{ task.started }}</span>
+      {% endif %}
+    </div>
+  {% empty %}
+    <span>This job has no tasks</span>
+  {% endfor %}
+</div>
+
+<span class="md-text md-text-caption divider">Job artifacts</span>
+
+<div class="artifacts list">
+  {% for artifact in object.artifacts.all %}
+    <div class="single-line-list-item list-button md-surface md-real">
+      <span class="first-line">{{ artifact.name }}</span>
+      <span class="topright-line">{{ artifact.created }}</span>
+      <span class="type">{{ artifact.type.description }}</span>
+
+      <a href="{% url 'job.media' object.id artifact.name %}"><span></span></a>
+    </div>
+  {% empty %}
+    <span>This job has no artifacts</span>
+  {% endfor %}
+</div>
+
+</div>
+{% endblock %}
