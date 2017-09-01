@@ -100,6 +100,20 @@ a.md-surface.md-button:not(.md-button-flat) {
   --self-elevation: 2px;
   --self-elevation-index: 2;
 }
+button.md-surface.md-button-raised,
+input[type="button"].md-surface.md-button-raised,
+input[type="submit"].md-surface.md-button-raised,
+a.md-surface.md-button.md-button-raised {
+  --self-elevation: 2px;
+  --self-elevation-index: 2;
+}
+button.md-surface.md-button-raised:active,
+input[type="button"].md-surface.md-button-raised:active,
+input[type="submit"].md-surface.md-button-raised:active,
+a.md-surface.md-button.md-button-raised:active {
+  --self-elevation: 8px;
+  --self-elevation-index: 8;
+}
 button.md-surface.md-button-text,
 input[type="button"].md-surface.md-button-text,
 input[type="submit"].md-surface.md-button-text,
@@ -127,6 +141,9 @@ input[type="button"].md-surface.md-button-icon >i,
 input[type="submit"].md-surface.md-button-icon >i,
 a.md-surface.md-button.md-button-icon >i {
   vertical-align: top;
+}
+a.md-surface.md-button {
+  display: inline-block;
 }
 a.md-surface.md-button.md-button-text {
   text-decoration: none;
