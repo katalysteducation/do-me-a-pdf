@@ -48,7 +48,7 @@ def job_media(request, job_id, name):
   mime = magic.Magic(mime=True).from_file(artifact.file.path)
 
   rsp = HttpResponse(content_type=mime)
-  rsp['Content-Disposition'] = 'attachment; filename={}'.format(smart_str(artifact.name))
+  rsp['Content-Disposition'] = 'inline; filename={}'.format(smart_str(artifact.name))
   rsp['X-Accel-Redirect'] = artifact.file.url
   return rsp
 
