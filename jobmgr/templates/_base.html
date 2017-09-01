@@ -18,13 +18,15 @@
     {% if user.is_authenticated %}
       <div class="title">
         {% block header_title %}
-          {{ title }}
+          <span class="md-text">{{ title }}</span>
         {% endblock %}
       </div>
-      <div class="fill"></div>
+      {% block appbar %}
+        <div class="fill"></div>
+      {% endblock %}
       <div class="user-info">
-        <span>Hello, {{ user.username }}</span>
-        <a href="{% url 'logout' %}">sign out</a>
+        <span class="md-text md-text-body">Hello, {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="md-text">sign out</a>
       </div>
     {% endif %}
   </header>

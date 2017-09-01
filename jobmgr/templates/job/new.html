@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 {% block content %}
-<form action="{% url 'job.new' %}" method="post" enctype="multipart/form-data" class="content flow-column md-surface md-container">
+<div class="content">
+<form action="{% url 'job.new' %}" method="post" enctype="multipart/form-data" class="flow-column md-surface md-container">
 {% csrf_token %}
 
 {{ form.errors }}
@@ -47,4 +48,5 @@
 </div>
 
 </form>
+</div>
 {% endblock %}

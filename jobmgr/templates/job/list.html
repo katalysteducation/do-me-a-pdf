@@ -1,7 +1,17 @@
 {% extends "_base.html" %}
-{% block content %}
-<div class="content list">
 
+{% block appbar %}
+  {{ block.super }}
+  <a href="{% url 'job.new' %}" class="md-surface md-button md-button-text">
+    New job
+  </a>
+  <span class="vdivider"></span>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+
+<div class="list">
 {% for job in object_list %}
   <div class="single-line-list-item list-button md-surface md-real">
     <span class="first-line">{{ job.name }}</span>
@@ -11,6 +21,7 @@
 {% empty %}
   <span>No jobs</span>
 {% endfor %}
+</div>
 
 </div>
 {% endblock %}
