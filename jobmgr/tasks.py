@@ -64,7 +64,7 @@ def generate_pdf(job, task, collection):
     path + '/bin/python',
     path + '/collectiondbk2pdf.py',
     '-d', collection_xml,
-    '-s', 'ked-university-physics',
+    '-s', 'ccap-ked-university-physics',
     '-r',
     artifact.file.path,
   ], cwd=path,
