@@ -69,45 +69,53 @@ input {
 }
 button.md-surface,
 input[type="button"].md-surface,
-input[type="submit"].md-surface {
+input[type="submit"].md-surface,
+a.md-surface.md-button {
   text-align: center;
 }
 button.md-surface:hover:not(:disabled),
 input[type="button"].md-surface:hover:not(:disabled),
-input[type="submit"].md-surface:hover:not(:disabled) {
+input[type="submit"].md-surface:hover:not(:disabled),
+a.md-surface.md-button:hover:not(:disabled) {
   background-color: rgba(153,153,153,0.4);
   cursor: pointer;
 }
 button.md-surface:disabled,
 input[type="button"].md-surface:disabled,
-input[type="submit"].md-surface:disabled {
+input[type="submit"].md-surface:disabled,
+a.md-surface.md-button:disabled {
   color: var(--color-text-disabled-button);
 }
 button.md-surface.md-button-flat,
 input[type="button"].md-surface.md-button-flat,
-input[type="submit"].md-surface.md-button-flat {
+input[type="submit"].md-surface.md-button-flat,
+a.md-surface.md-button.md-button-flat {
   --self-elevation: 0px;
   --self-elevation-index: 0;
 }
 button.md-surface:not(.md-button-flat),
 input[type="button"].md-surface:not(.md-button-flat),
-input[type="submit"].md-surface:not(.md-button-flat) {
+input[type="submit"].md-surface:not(.md-button-flat),
+a.md-surface.md-button:not(.md-button-flat) {
   --self-elevation: 2px;
   --self-elevation-index: 2;
 }
 button.md-surface.md-button-text,
 input[type="button"].md-surface.md-button-text,
-input[type="submit"].md-surface.md-button-text {
+input[type="submit"].md-surface.md-button-text,
+a.md-surface.md-button.md-button-text {
   height: 36px;
   margin: 8px 8px 8px 8px;
   padding: 0px 8px 0px 8px;
+  border-radius: 2px;
   text-transform: uppercase;
   color: var(--color-accent);
   font-size: 14px;
 }
 button.md-surface.md-button-icon,
 input[type="button"].md-surface.md-button-icon,
-input[type="submit"].md-surface.md-button-icon {
+input[type="submit"].md-surface.md-button-icon,
+a.md-surface.md-button.md-button-icon {
   width: 36px;
   height: 36px;
   padding: 6px;
@@ -116,8 +124,13 @@ input[type="submit"].md-surface.md-button-icon {
 }
 button.md-surface.md-button-icon >i,
 input[type="button"].md-surface.md-button-icon >i,
-input[type="submit"].md-surface.md-button-icon >i {
+input[type="submit"].md-surface.md-button-icon >i,
+a.md-surface.md-button.md-button-icon >i {
   vertical-align: top;
+}
+a.md-surface.md-button.md-button-text {
+  text-decoration: none;
+  line-height: 36px;
 }
 div.md-surface.md-button-bar {
   margin: 0px;
