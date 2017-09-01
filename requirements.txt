@@ -1,0 +1,5 @@
+Django ~= 1.11
+Celery[redis] ~= 4.1
+gunicorn
+psycopg2
+toml
