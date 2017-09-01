@@ -3,3 +3,4 @@ Celery[redis] ~= 4.1
 gunicorn
 psycopg2
 toml
+python-magic

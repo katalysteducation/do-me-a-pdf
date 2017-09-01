@@ -1,9 +1,11 @@
+import magic
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import File
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, reverse
+from django.utils.encoding import smart_str
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
@@ -43,7 +45,11 @@ def job_media(request, job_id, name):
   except (Job.DoesNotExist, Artifact.DoesNotExist):
     raise Http404()
 
-  rsp = HttpResponse(artifact.file)
+  mime = magic.Magic(mime=True).from_file(artifact.file.path)
+
+  rsp = HttpResponse(content_type=mime)
+  rsp['Content-Disposition'] = 'attachment; filename={}'.format(smart_str(artifact.name))
+  rsp['X-Accel-Redirect'] = artifact.file.url
   return rsp
 
 # /job/new
