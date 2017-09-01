@@ -1,0 +1,188 @@
+@require 'material-style/colors'
+@require 'material-style/mixins'
+
+:root
+  primary-color teal '500'
+  accent-color purple '600'
+
+body
+  margin-top 48px + 8px
+  margin-bottom 8px
+
+body > header:first-child
+  elevation 4
+  height 48px
+  display flex
+
+  position fixed
+  left 0
+  top 0
+  right 0
+
+  > div.title
+    line-height 48px
+    padding-left 16px
+
+  > div.fill
+    flex 1
+
+  > div.user-info
+    padding-top 6px
+    padding-right 16px
+    text-align right
+
+    > *
+      display block
+
+  > .md-surface.md-button
+    margin 6px 0 6px 0
+    background none
+
+  > span.vdivider
+    border-left 1px solid var(--color-divider)
+    margin 8px
+
+body > .content
+  width = 42em
+  padding = "calc(50% - %s/2)" % width
+
+  position absolute
+  left 0
+  top 48px
+  right 0
+  bottom 0
+  overflow-y scroll
+
+  // width width
+  // margin-left padding
+
+  > *
+    margin 8px padding 8px padding
+
+.list
+  > :not(:first-child)
+    border-top 1px solid var(--color-divider)
+
+  > .single-line-list-item
+    min-height 40px
+    padding-left 16px
+    padding-right 16px
+    line-height 40px
+    font-size 13px
+
+    > .topright-line
+      float right
+      color var(--color-text-secondary)
+      text-align right
+
+  > .two-line-list-item
+    padding = calc((60px - 2em) / 2)
+    min-height 60px
+    padding padding 16px padding 16px
+    position relative
+    font-size 13px
+
+    > .first-line
+    > .second-line
+      display block
+
+    > .topright-line
+      position absolute
+      top padding
+      right 16px
+      color var(--color-text-secondary)
+      text-align right
+
+.md-surface.list-button
+  elevation 0
+  position relative
+  background-color initial
+
+  &:hover
+    elevation 2
+    cursor pointer
+
+  > a:last-child > span
+    position absolute
+    left 0px
+    top 0px
+    width 100%
+    height 100%
+    z-index calc(var(--self-elevation-index) + 1)
+
+.divify
+  display block
+
+.flow-column
+  content-padding 8px 16px 8px 16px 8px
+
+  > :not(.md-container)
+    display block
+
+span.divider
+.md-container > span.divider
+  border-top 1px solid var(--color-divider)
+  padding var(--margin)
+  margin 0
+  margin-top var(--margin-top)
+
+//
+// New job
+//
+
+div.source-option
+  border-top 1px solid var(--color-divider)
+  padding var(--margin)
+  padding-bottom 0
+  margin 0 !important
+  margin-top var(--margin-top) !important
+
+  > input
+    height 48px
+
+  > label
+    height 48px
+    display inline-block
+    vertical-align top
+    padding 4px 0 0 8px
+
+    &:hover
+      cursor pointer
+
+    > span
+      display block
+
+    > span:last-child
+      font-size 12px
+
+  > input:not(:checked) + label
+  > input:not(:checked) + label
+    color var(--color-text-disabled)
+
+  > input:not(:checked) + label + div.content
+    display none
+
+  > div.content
+    margin-top 8px
+
+//
+// Job view
+//
+
+.state-started
+  color gray
+
+.state-completed
+  color green['500']
+
+.state-failed
+  color red['500']
+
+div.artifacts.list
+  .type
+    float right
+    color var(--color-text-secondary)
+    padding-right 16px
+
+  .topright-line
+    min-width 12em

@@ -14,6 +14,7 @@
   {% endblock %}
 </head>
 <body>
+{% block header %}
   <header class="md-surface md-real">
     {% if user.is_authenticated %}
       <div class="title">
@@ -30,8 +31,9 @@
       </div>
     {% endif %}
   </header>
+{% endblock %}
 
-  {% block content %}
-  {% endblock %}
+{% block content %}
+{% endblock %}
 </body>
 </html>

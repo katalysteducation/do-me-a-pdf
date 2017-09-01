@@ -11,8 +11,10 @@ from .forms import NewJobForm
 from .models import Artifact, ArtifactType, Job
 from .tasks import unpack_collection_zip
 
+# /
+@login_required
 def index(request):
-  return HttpResponse('Hello')
+  return render(request, 'index.html', {})
 
 class StaticContextMixin:
   def get_context_data(self, **kwargs):
@@ -20,12 +22,13 @@ class StaticContextMixin:
     ctx.update(self.context)
     return ctx
 
+# /job/all
 class JobList(StaticContextMixin, LoginRequiredMixin, ListView):
   model = Job
   template_name = 'job/list.html'
   context = { 'title': 'Job list' }
 
-# @login_required
+# /job/<id>
 class JobView(StaticContextMixin, LoginRequiredMixin, DetailView):
   model = Job
   template_name = 'job/view.html'
@@ -43,6 +46,7 @@ def job_media(request, job_id, name):
   rsp = HttpResponse(artifact.file)
   return rsp
 
+# /job/new
 @login_required
 def job_new(request):
   if request.method == 'POST':
@@ -55,7 +59,6 @@ def job_new(request):
 
   return render(request, 'job/new.html', {'form': form, 'title': 'New job'})
 
-@login_required
 def add_new_job(request, form):
   name = form['name'].value()
   source = form['collection_source'].value()
