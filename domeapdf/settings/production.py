@@ -27,6 +27,9 @@ DATABASES = {
 
 ADMINS = _cfg['admins']
 
+# oer.exports location
+CNX_OER_EXPORTS = _cfg['oer-exports']
+
 # From django security checkup (./manage.py check --deploy)
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True

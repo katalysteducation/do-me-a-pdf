@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import tempfile
 from celery import shared_task
+from django.conf import settings
 
 from .models import Artifact, ArtifactType, Job, Task, TaskState
 
@@ -58,7 +59,7 @@ def generate_pdf(job, task, collection):
   errlog = Artifact.create('stderr.log', str(job.pk), ArtifactType.ERROR_LOG)
   task.attach(outlog, errlog)
 
-  path = '/media/veracrypt1/oer.exports'
+  path = settings.CNX_OER_EXPORTS
   p = subprocess.Popen([
     path + '/bin/python',
     path + '/collectiondbk2pdf.py',
