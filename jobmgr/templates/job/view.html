@@ -38,6 +38,7 @@
     <div class="single-line-list-item list-button md-surface md-real">
       <span class="first-line">{{ artifact.name }}</span>
       <span class="topright-line">{{ artifact.created }}</span>
+      <span class="artifact-size">{{ artifact.file.size | filesizeformat }}</span>
       <span class="type">{{ artifact.type.description }}</span>
 
       <a href="{% url 'job.media' object.id artifact.name %}"><span></span></a>
