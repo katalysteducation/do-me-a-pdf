@@ -6,6 +6,12 @@ button,
 input {
   border: none;
 }
+.md {
+  --self-duration: var(--duration);
+  --self-easing: var(--easing-standard);
+  --transitions-surface: var(--self-duration) box-shadow var(--self-easing) 0s, var(--self-duration) z-index var(--self-easing) 0s;
+  transition: var(--transition-surface);
+}
 .md-surface {
   --self-duration: var(--duration);
   --self-easing: var(--easing-standard);
@@ -107,10 +113,10 @@ a.md-surface.md-button.md-button-raised {
   --self-elevation: 2px;
   --self-elevation-index: 2;
 }
-button.md-surface.md-button-raised:active,
-input[type="button"].md-surface.md-button-raised:active,
-input[type="submit"].md-surface.md-button-raised:active,
-a.md-surface.md-button.md-button-raised:active {
+button.md-surface.md-button-raised:focus,
+input[type="button"].md-surface.md-button-raised:focus,
+input[type="submit"].md-surface.md-button-raised:focus,
+a.md-surface.md-button.md-button-raised:focus {
   --self-elevation: 8px;
   --self-elevation-index: 8;
 }
@@ -124,7 +130,7 @@ a.md-surface.md-button.md-button-text {
   border-radius: 2px;
   text-transform: uppercase;
   color: var(--color-accent);
-  font-size: 14px;
+  font-size: 13px;
 }
 button.md-surface.md-button-icon,
 input[type="button"].md-surface.md-button-icon,
@@ -208,7 +214,9 @@ label.md-text-field.-md-focus>span:first-child {
   color: var(--color-accent);
 }
 label.md-text-field >input[type="text"],
-label.md-text-field >input[type="url"] {
+label.md-text-field >input[type="password"],
+label.md-text-field >input[type="url"],
+label.md-text-field >input[type="email"] {
   margin-top: var(--text-field-label-padding);
 }
 input.md-surface {
@@ -219,7 +227,9 @@ input.md-surface {
   background-color: initial;
 }
 input.md-surface[type="text"],
-input.md-surface[type="url"] {
+input.md-surface[type="password"],
+input.md-surface[type="url"],
+input.md-surface[type="email"] {
   width: 100%;
   margin-top: var(--text-field-margin-top);
   padding-bottom: var(--text-field-padding-bottom);
@@ -229,23 +239,92 @@ input.md-surface[type="url"] {
   --self-line-color: var(--color-divider);
 }
 input.md-surface[type="text"]:invalid,
-input.md-surface[type="url"]:invalid {
+input.md-surface[type="password"]:invalid,
+input.md-surface[type="url"]:invalid,
+input.md-surface[type="email"]:invalid {
   --self-line-color: #f44336;
 }
 input.md-surface[type="text"]:focus,
-input.md-surface[type="url"]:focus {
+input.md-surface[type="password"]:focus,
+input.md-surface[type="url"]:focus,
+input.md-surface[type="email"]:focus {
   padding-bottom: var(--text-field-padding-bottom-focus);
   margin-bottom: var(--text-field-margin-bottom-focus);
   border-bottom: 2px solid var(--self-line-color);
 }
 input.md-surface[type="text"]:focus:not(:invalid),
-input.md-surface[type="url"]:focus:not(:invalid) {
+input.md-surface[type="password"]:focus:not(:invalid),
+input.md-surface[type="url"]:focus:not(:invalid),
+input.md-surface[type="email"]:focus:not(:invalid) {
   --self-line-color: var(--color-accent);
 }
 input.md-surface[type="text"]:disabled,
-input.md-surface[type="url"]:disabled {
+input.md-surface[type="password"]:disabled,
+input.md-surface[type="url"]:disabled,
+input.md-surface[type="email"]:disabled {
   border-bottom: 1px dotted var(--self-line-color);
   color: var(--color-text-disabled);
+}
+progress.md {
+  --transitions-progress: var(--transitions-surface), var(--self-duration) height var(--self-easing) 0s, var(--self-duration) padding-top var(--self-easing) 0s;
+  transition: var(--transitions-progress);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  background-color: #bbdefb;
+  width: 100%;
+  height: 4px;
+}
+progress.md.hidden,
+progress.md.hidden::-moz-progress-bar {
+  height: 0px;
+}
+progress.md::-moz-progress-bar {
+  background-color: #1976d2;
+}
+a.md.text-display,
+p.md.text-display,
+span.md.text-display {
+  font-size: 34px;
+  color: var(--color-text-secondary);
+}
+a.md.text-headline,
+p.md.text-headline,
+span.md.text-headline {
+  font-size: 24px;
+  color: var(--color-text-primary);
+}
+a.md.text-title,
+p.md.text-title,
+span.md.text-title {
+  font-size: 20px;
+  color: var(--color-text-primary);
+}
+a.md.text-subheading,
+p.md.text-subheading,
+span.md.text-subheading {
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+a.md.text-body,
+p.md.text-body,
+span.md.text-body {
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+a.md.text-caption,
+p.md.text-caption,
+span.md.text-caption {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+a.md.text-button,
+p.md.text-button,
+span.md.text-button {
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
 }
 span.md-text.md-text-display {
   font-size: 34px;
