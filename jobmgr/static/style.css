@@ -121,6 +121,13 @@ span.divider,
   margin: 0;
   margin-top: var(--margin-top);
 }
+div.log-in >* {
+  --content-padding-top: 8px;
+  --content-padding-right: 16px;
+  --content-padding-bottom: 8px;
+  --content-padding-left: 16px;
+  --content-spacing: 8px;
+}
 div.source-option {
   border-top: 1px solid var(--color-divider);
   padding: var(--margin);
@@ -168,6 +175,12 @@ div.artifacts.list .type {
   float: right;
   color: var(--color-text-secondary);
   padding-right: 16px;
+}
+div.artifacts.list .artifact-size {
+  float: right;
+  color: var(--color-text-secondary);
+  min-width: 4em;
+  text-align: right;
 }
 div.artifacts.list .topright-line {
   min-width: 12em;

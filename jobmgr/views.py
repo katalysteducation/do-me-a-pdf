@@ -1,17 +1,64 @@
 import magic
 from datetime import datetime
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.files.base import File
 from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.shortcuts import render, reverse
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
 from django.utils.encoding import smart_str
+from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from .forms import NewJobForm
+from .forms import NewJobForm, NewUserForm
 from .models import Artifact, ArtifactType, Job
 from .tasks import unpack_collection_zip
+from .tokens import account_activation_token
+
+def signup(request):
+  if request.method == 'POST':
+    form = NewUserForm(request.POST)
+    if form.is_valid():
+      user = form.save(commit=False)
+      user.is_active = False
+      user.save()
+
+      current_site = get_current_site(request)
+      subject = 'Activate Your Account'
+      message = render_to_string('registration/activate_email.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+      })
+      user.email_user(subject, message, fail_silently=False)
+      return render(request, 'registration/activation_sent.html', {})
+  else:
+    form = NewUserForm()
+  return render(request, 'registration/new.html', {'form': form})
+
+def activate(request, uidb64, token):
+  try:
+    uid = str(urlsafe_base64_decode(uidb64), 'ascii')
+    user = User.objects.get(pk=uid)
+  except (TypeError, ValueError, OverflowError, User.DoesNotExist) as ex:
+    user = None
+
+  if user is not None and account_activation_token.check_token(user, token):
+    user.is_active = True
+    user.profile.email_confirmed = True
+    user.save()
+    login(request, user)
+    return redirect('index')
+  else:
+    return render(request, 'registration/activation_invalid.html')
 
 # /
 @login_required

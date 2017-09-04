@@ -1,0 +1,47 @@
+{% extends "_base.html" %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="content">
+<div class="md-container log-in">
+
+{% if form.errors %}
+  {{ form.errors }}
+{% endif %}
+
+<form method="post" class="md-layout-ignore">
+  {% csrf_token %}
+
+  <label class="md-surface md-text-field">
+    <span>Username</span>
+    <input type="text" name="username" required autofocus class="md-surface md-input">
+  </label>
+
+  <label class="md-surface md-text-field">
+    <span>Email</span>
+    <input type="email" name="email" required class="md-surface md-input-text">
+  </label>
+
+  <label class="md-surface md-text-field">
+    <span>Password</span>
+    <input type="password" name="password1" required class="md-surface md-input-text">
+  </label>
+
+  <label class="md-surface md-text-field">
+    <span>Password confirmation</span>
+    <input type="password" name="password2" required class="md-surface md-input-text">
+  </label>
+
+  <div class="md-surface md-button-bar">
+    <input type="submit" value="register" class="md-surface md-button md-button-text" />
+    <a href="{% url 'login' %}" class="md-surface md-button md-button-text">
+      Sign in
+    </a>
+  </div>
+</form>
+
+</div>
+</div>
+{% endblock %}

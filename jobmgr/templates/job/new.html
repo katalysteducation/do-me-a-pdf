@@ -1,52 +1,60 @@
 {% extends "_base.html" %}
 {% block content %}
 <div class="content">
+
+<!-- FORM -->
 <form action="{% url 'job.new' %}" method="post" enctype="multipart/form-data" class="flow-column md-surface md-container">
-{% csrf_token %}
+  {% csrf_token %}
 
-{{ form.errors }}
+  {{ form.errors }}
 
-<!-- NAME -->
-<label class="md-surface md-text-field">
-  <span>Job name</span>
-  <input class="md-surface md-input" type="text" name="name">
-</label>
-
-<span class="md-text md-text-caption">Collection source</span>
-
-<!-- ZIP SOURCE -->
-<div class="source-option">
-  <input type="radio" name="collection_source" value="zip" checked id="source-zip">
-  <label for="source-zip">
-    <span>Zipped collection</span>
-    <span>Upload and render a zipped collection</span>
+  <!-- NAME -->
+  <label class="md-surface md-text-field">
+    <span>Job name</span>
+    <input class="md-surface md-input" type="text" name="name">
   </label>
 
-  <div class="content flow-column">
-    <div class="collection-zip flow-column">
-      <span class="md-text md-text-caption">Collection ZIP</span>
-      <input type="file" name="collection_zip" accept="application/zip">
+  <span class="md-text md-text-caption">Collection source</span>
+
+  <!-- ZIP SOURCE -->
+  <div class="source-option">
+    <input type="radio" name="collection_source" value="zip" checked id="source-zip">
+    <label for="source-zip">
+      <span>Zipped collection</span>
+      <span>Upload and render a zipped collection</span>
+    </label>
+
+    <div class="content flow-column">
+      <div class="collection-zip flow-column">
+        <span class="md-text md-text-caption">Collection ZIP</span>
+        <input type="file" name="collection_zip" accept="application/zip">
+      </div>
     </div>
   </div>
-</div>
 
-<!-- LEGACY SOURCE -->
-<div class="source-option">
-  <input type="radio" name="collection_source" value="legacy" id="source-legacy">
-  <label for="source-legacy">
-    <span>Collection on CNX Legacy</span>
-    <span>Download collection from CNX Legacy</span>
-  </label>
-</div>
+  <!-- LEGACY SOURCE -->
+  <div class="source-option">
+    <input type="radio" name="collection_source" value="legacy" id="source-legacy">
+    <label for="source-legacy">
+      <span>Collection on CNX Legacy</span>
+      <span>Download collection from CNX Legacy</span>
+    </label>
+  </div>
 
-<!-- SUBMIT -->
+  <!-- SUBMIT -->
 
-<span class="divider"></span>
+  <span class="divider"></span>
 
-<div class="md-surface md-button-bar">
-  <input type="submit" value="Create job" class="md-surface md-button md-button-text">
-</div>
-
+  <div class="md-surface md-button-bar">
+    <input type="submit" value="Create job" class="md-surface md-button md-button-text">
+  </div>
 </form>
+
+<!-- UPLOAD PROGRESS -->
+<div class="progress">
+  <span class="md">Uploading</span>
+  <progress class="md">
+</div>
+
 </div>
 {% endblock %}

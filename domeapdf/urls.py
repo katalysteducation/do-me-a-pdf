@@ -16,8 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from jobmgr import views
+
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
   url(r'^accounts/', include('django.contrib.auth.urls')),
+  url(r'^accounts/new$', views.signup, name='signup'),
+  url(r'^accounts/activate/(?P<uidb64>[0-9a-zA-Z_-]+)/(?P<token>[0-9a-zA-Z]{1,13}-[0-9a-zA-Z]{1,20})/$', views.activate, name='activate'),
   url(r'^', include('jobmgr.urls')),
 ]
