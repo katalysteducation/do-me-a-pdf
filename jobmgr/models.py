@@ -129,7 +129,7 @@ class Task(models.Model):
   def __exit__(self, exc, ex, trace):
     if ex:
       self.fail(ex)
-    else:
+    elif self.state == TaskState.STARTED:
       self.complete()
 
   @property
@@ -155,3 +155,20 @@ class Task(models.Model):
   def attach(self, *artifacts):
     self.artifacts.add(*artifacts)
     self.job.artifacts.add(*artifacts)
+
+class BookStyle(models.Model):
+  name = models.CharField(max_length=64, unique=True)
+  default = models.BooleanField(default=False)
+
+  def __str__(self):
+    return '<BookStyle {}{}>'.format(self.name, ' default' if self.default else '')
+
+class JobOptions(models.Model):
+  """PDF generation options"""
+
+  job = models.ForeignKey(Job, on_delete=models.CASCADE)
+
+  # Reduce quality of images
+  reduce_quality = models.BooleanField()
+  # Book style
+  style = models.ForeignKey(BookStyle)

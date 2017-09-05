@@ -14,6 +14,25 @@
     <input class="md-surface md-input" type="text" name="name">
   </label>
 
+  <!-- REDUCE IMAGE QUALITY -->
+  <label class="md">
+    <input type="checkbox" name="reduce_quality" checked>
+    <span class="md">Reduce image quality</span>
+  </label>
+
+  <!-- BOOK STYLE -->
+  <label class="md">
+    <span class="md">Book style</span>
+    <select name="book_style">
+    {% for style in styles %}
+      <option value="{{ style.name }}" {% if style.default %}selected{% endif %}>
+        {{ style.name }}
+      </option>
+    {% endfor %}
+    </select>
+  </label>
+
+  <!-- COLLECTION SOURCE -->
   <span class="md-text md-text-caption">Collection source</span>
 
   <!-- ZIP SOURCE -->
@@ -49,12 +68,6 @@
     <input type="submit" value="Create job" class="md-surface md-button md-button-text">
   </div>
 </form>
-
-<!-- UPLOAD PROGRESS -->
-<div class="progress">
-  <span class="md">Uploading</span>
-  <progress class="md">
-</div>
 
 </div>
 {% endblock %}

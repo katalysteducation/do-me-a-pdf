@@ -42,12 +42,12 @@ def unpack_zip(into, path):
   if p.returncode != 0:
     raise RuntimeError(str(err, 'utf-8'))
 
-def generate_pdf(job, task, collection):
+def generate_pdf(job, task, tmp):
   artifact = Artifact.create('collection.pdf', str(job.pk), ArtifactType.GENERATED_PDF)
   task.attach(artifact)
 
   collection_xml = None
-  for root, dirs, files in os.walk(collection):
+  for root, dirs, files in os.walk(tmp):
     if 'collection.xml' in files:
       collection_xml = root
       break
@@ -59,19 +59,40 @@ def generate_pdf(job, task, collection):
   errlog = Artifact.create('stderr.log', str(job.pk), ArtifactType.ERROR_LOG)
   task.attach(outlog, errlog)
 
+  options = job.joboptions_set.get()
+
+  out_dir = os.path.join(tmp, '_out')
+  os.mkdir(out_dir)
+
   path = settings.CNX_OER_EXPORTS
-  p = subprocess.Popen([
+  args = [
     path + '/bin/python',
     path + '/collectiondbk2pdf.py',
     '-d', collection_xml,
-    '-s', 'ccap-ked-university-physics',
-    '-r',
+    '-s', options.style.name,
+    '-t', out_dir,
     artifact.file.path,
-  ], cwd=path,
-     stdout=open(outlog.file.path, 'wb'),
-     stderr=open(errlog.file.path, 'wb'))
+  ]
+
+  if options.reduce_quality:
+    args.append('-r')
+
+  p = subprocess.Popen(args, cwd=path,
+                             stdout=open(outlog.file.path, 'wb'),
+                             stderr=open(errlog.file.path, 'wb'))
 
   out, err = p.communicate()
-  print(out, err)
-  if p.returncode == 0:
-    return artifact
+  if p.returncode != 0:
+    task.fail('PDF generation failed, see stderr.log for details')
+    return
+
+  out_zip = Artifact.create('collection.xhtml.zip', str(job.pk), ArtifactType.COLLECTION_ZIP)
+  task.attach(out_zip)
+
+  os.remove(out_zip.file.path) # Remove empty to prevent zip from failing
+  p = subprocess.Popen(['/usr/bin/zip', '-qq', out_zip.file.path, '-r', out_dir], stdout=subprocess.PIPE)
+  out, err = p.communicate()
+  if p.returncode != 0:
+    task.fail('cannot generate collection.xhtml.zip: {}'.format(str(out, 'utf-8')))
+
+  return artifact

@@ -3,6 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+def book_styles():
+  from .models import BookStyle
+  return map(lambda x: (x.name, x.name), BookStyle.objects.all())
+
 class NewJobForm(forms.Form):
   SOURCES = tuple(map(lambda x: (x, x), (
     'zip',
@@ -10,6 +14,8 @@ class NewJobForm(forms.Form):
   )))
 
   name = forms.CharField(required=False)
+  reduce_quality = forms.BooleanField()
+  book_style = forms.ChoiceField(choices=book_styles)
   collection_source = forms.ChoiceField(choices=SOURCES)
 
   collection_zip = forms.FileField(required=False)

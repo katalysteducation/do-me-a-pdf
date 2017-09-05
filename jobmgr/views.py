@@ -18,7 +18,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from .forms import NewJobForm, NewUserForm
-from .models import Artifact, ArtifactType, Job
+from .models import Artifact, ArtifactType, JobOptions, Job, BookStyle
 from .tasks import unpack_collection_zip
 from .tokens import account_activation_token
 
@@ -110,11 +110,17 @@ def job_new(request):
   else:
     form = NewJobForm()
 
-  return render(request, 'job/new.html', {'form': form, 'title': 'New job'})
+  return render(request, 'job/new.html', {
+    'form': form,
+    'title': 'New job',
+    'styles': BookStyle.objects.all(),
+  })
 
 def add_new_job(request, form):
   name = form['name'].value()
   source = form['collection_source'].value()
+  reduce_quality = form['reduce_quality'].value()
+  style = BookStyle.objects.get(name=form['book_style'].value())
 
   if not name:
     name = str(datetime.now())
@@ -122,6 +128,9 @@ def add_new_job(request, form):
   job = Job(name=name)
   job.clean()
   job.save()
+
+  options = JobOptions(job=job, reduce_quality=reduce_quality, style=style)
+  options.save()
 
   if source == 'zip':
     load_collection_zip(request, job)
