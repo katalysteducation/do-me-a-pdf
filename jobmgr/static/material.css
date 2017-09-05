@@ -265,23 +265,182 @@ input.md-surface[type="email"]:disabled {
   border-bottom: 1px dotted var(--self-line-color);
   color: var(--color-text-disabled);
 }
-progress.md {
-  --transitions-progress: var(--transitions-surface), var(--self-duration) height var(--self-easing) 0s, var(--self-duration) padding-top var(--self-easing) 0s;
-  transition: var(--transitions-progress);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+input.md {
   border: none;
-  background-color: #bbdefb;
+  padding: 0;
+  color: var(--color-text-primary);
+  background-color: initial;
+}
+label.md {
+  display: flow-root;
+}
+@derive input.md;
+label.md > input[type="checkbox"],
+label.md > input[type="radio"] {
+  height: 100%;
+  vertical-align: middle;
+}
+label.md > input[type="checkbox"]+ span,
+label.md > input[type="radio"]+ span {
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 16px;
+}
+label.md > span.md:first-child {
+  display: inline-block;
+}
+div.md.progress.linear {
+  display: block;
+  overflow: hidden;
   width: 100%;
   height: 4px;
+  border-radius: 1px;
+  margin: 4px 0px 4px 0px;
+  background-color: #bbdefb;
 }
-progress.md.hidden,
-progress.md.hidden::-moz-progress-bar {
-  height: 0px;
+div.md.progress.linear > :first-child {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 0%;
+  height: 100%;
+  border-radius: 1px;
 }
-progress.md::-moz-progress-bar {
+div.md.progress.linear.determinate > :first-child {
   background-color: #1976d2;
+}
+div.md.progress.linear.indeterminate > :first-child {
+  width: 100%;
+}
+div.md.progress.linear.indeterminate > :first-child::before,
+div.md.progress.linear.indeterminate > :first-child::after {
+  content: '';
+  background-color: #1976d2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 50%;
+}
+div.md.progress.linear.indeterminate > :first-child::before {
+  animation: -md-indeterminate-before 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+}
+div.md.progress.linear.indeterminate > :first-child::after {
+  animation: -md-indeterminate-after 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  animation-delay: 1.15s;
+}
+@-moz-keyframes -md-indeterminate-before {
+  0% {
+    left: -33%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@-webkit-keyframes -md-indeterminate-before {
+  0% {
+    left: -33%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@-o-keyframes -md-indeterminate-before {
+  0% {
+    left: -33%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@keyframes -md-indeterminate-before {
+  0% {
+    left: -33%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@-moz-keyframes -md-indeterminate-after {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+@-webkit-keyframes -md-indeterminate-after {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+@-o-keyframes -md-indeterminate-after {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}
+@keyframes -md-indeterminate-after {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
 }
 a.md.text-display,
 p.md.text-display,
