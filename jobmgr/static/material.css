@@ -277,7 +277,6 @@ label.md {
 @derive input.md;
 label.md > input[type="checkbox"],
 label.md > input[type="radio"] {
-  height: 100%;
   vertical-align: middle;
 }
 label.md > input[type="checkbox"]+ span,
