@@ -113,7 +113,7 @@ def job_new(request):
   return render(request, 'job/new.html', {
     'form': form,
     'title': 'New job',
-    'styles': BookStyle.objects.all(),
+    'styles': sorted(BookStyle.objects.all(), key=lambda x: x.name),
   })
 
 def add_new_job(request, form):
