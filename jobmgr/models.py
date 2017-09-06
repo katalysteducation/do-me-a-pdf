@@ -46,6 +46,7 @@ class ArtifactType(Enum):
   COLLECTION_ZIP  = 1
   GENERATED_PDF   = 2
   ERROR_LOG       = 3
+  PROCESSING      = 4
 
   def description(self):
     return [
@@ -53,6 +54,7 @@ class ArtifactType(Enum):
       'collection ZIP',
       'generated PDF',
       'error log file',
+      'processing artifact',
     ][self.value]
 
 class Artifact(models.Model):

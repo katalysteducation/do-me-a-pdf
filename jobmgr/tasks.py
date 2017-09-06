@@ -43,9 +43,6 @@ def unpack_zip(into, path):
     raise RuntimeError(str(err, 'utf-8'))
 
 def generate_pdf(job, task, tmp):
-  artifact = Artifact.create('collection.pdf', str(job.pk), ArtifactType.GENERATED_PDF)
-  task.attach(artifact)
-
   collection_xml = None
   for root, dirs, files in os.walk(tmp):
     if 'collection.xml' in files:
@@ -58,6 +55,8 @@ def generate_pdf(job, task, tmp):
   outlog = Artifact.create('stdout.log', str(job.pk), ArtifactType.ERROR_LOG)
   errlog = Artifact.create('stderr.log', str(job.pk), ArtifactType.ERROR_LOG)
   task.attach(outlog, errlog)
+  outlog = open(outlog.file.path, 'wb')
+  errlog = open(errlog.file.path, 'wb')
 
   options = job.joboptions_set.get()
 
@@ -65,34 +64,71 @@ def generate_pdf(job, task, tmp):
   os.mkdir(out_dir)
 
   path = settings.CNX_OER_EXPORTS
+
+  # Convert CNXML to XHTML
+
+  xhtml = Artifact.create('collection.xhtml', str(job.pk), ArtifactType.PROCESSING)
+  task.attach(xhtml)
+
   args = [
     path + '/bin/python',
-    path + '/collectiondbk2pdf.py',
+    path + '/collection2xhtml.py',
     '-d', collection_xml,
-    '-s', options.style.name,
     '-t', out_dir,
-    artifact.file.path,
+    xhtml.file.path
   ]
 
   if options.reduce_quality:
     args.append('-r')
 
-  p = subprocess.Popen(args, cwd=path,
-                             stdout=open(outlog.file.path, 'wb'),
-                             stderr=open(errlog.file.path, 'wb'))
+  if not exec(args, path, outlog, errlog):
+    task.fail('CNXML to XHTML conversion failed')
+    return
 
-  out, err = p.communicate()
-  if p.returncode != 0:
+  # Bake XHTML
+
+  recipy = os.path.join(path, 'recipes', options.style.name + '.css')
+  if os.path.exists(recipy):
+    baked = Artifact.create('collection.baked.xhtml', str(job.pk), ArtifactType.PROCESSING)
+    task.attach(baked)
+
+    args = [
+      path + '/bin/cnx-easybake',
+      recipy, xhtml.file.path, baked.file.path,
+    ]
+
+    if not exec(args, path, outlog, errlog):
+      task.fail('XHTML baking failed')
+      return
+
+    xhtml = baked
+
+  # Generate PDF
+
+  pdf = Artifact.create('collection.pdf', str(job.pk), ArtifactType.GENERATED_PDF)
+  task.attach(pdf)
+
+  args = [
+    'prince',
+    '-s', os.path.join(path, 'css', options.style.name + '.css'),
+    '-o', pdf.file.path,
+    xhtml.file.path,
+  ]
+
+  if not exec(args, path, outlog, errlog):
     task.fail('PDF generation failed, see stderr.log for details')
     return
 
-  out_zip = Artifact.create('collection.xhtml.zip', str(job.pk), ArtifactType.COLLECTION_ZIP)
+  # zip temporary files
+
+  out_zip = Artifact.create('collection.xhtml.zip', str(job.pk), ArtifactType.PROCESSING)
   task.attach(out_zip)
 
   os.remove(out_zip.file.path) # Remove empty to prevent zip from failing
-  p = subprocess.Popen(['/usr/bin/zip', '-qq', out_zip.file.path, '-r', out_dir], stdout=subprocess.PIPE)
-  out, err = p.communicate()
-  if p.returncode != 0:
+  if not exec(['/usr/bin/zip', '-qq', out_zip.file.path, '-r', out_dir], path, outlog, errlog):
     task.fail('cannot generate collection.xhtml.zip: {}'.format(str(out, 'utf-8')))
 
-  return artifact
+def exec(args, cwd, stdout, stderr):
+  p = subprocess.Popen(args, cwd=cwd, stdout=stdout, stderr=stderr)
+  p.communicate()
+  return p.returncode == 0
