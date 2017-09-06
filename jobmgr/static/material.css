@@ -37,7 +37,7 @@ input {
 }
 .md-container:not(.-md-horizontal) > * {
   --margin-top: var(--content-spacing);
-  --margin-right: var(--content-padding-left);
+  --margin-right: var(--content-padding-right);
   --margin-bottom: var(--content-spacing);
   --margin-left: var(--content-padding-left);
 }

@@ -18,19 +18,17 @@ body > header:first-child
   left 0
   top 0
   right 0
-  padding-left calc(50% - 42em/2)
-  padding-right calc(50% - 42em/2)
+  padding-left calc(50vw - 42em/2)
+  padding-right calc(50vw - 42em/2)
 
   > div.title
     line-height 48px
-    padding-left 16px
 
   > div.fill
     flex 1
 
   > div.user-info
     padding-top 6px
-    padding-right 16px
     text-align right
 
     > *
@@ -46,17 +44,17 @@ body > header:first-child
 
 body > .content
   width = 42em
-  padding = "calc(50% - %s/2)" % width
+  padding-left = "calc(50vw - %s/2 - 16px)" % width
+  padding-right = "calc(100% - %s - (50vw - %s/2) - 16px)" % (width width)
 
   position absolute
   left 0
   top 48px
   right 0
   bottom 0
-  overflow-y scroll
+  overflow-y auto
 
-  > *
-    margin 8px padding 8px padding
+  content-padding 8px padding-right 8px padding-left 8px
 
 .list
   > :not(:first-child)
@@ -91,6 +89,23 @@ body > .content
       right 16px
       color var(--color-text-secondary)
       text-align right
+
+    > .bottomright-line
+      position absolute
+      bottom padding
+      right 16px
+      text-align right
+
+      &:not(.md-button)
+        color var(--color-text-secondary)
+
+      &.md-button
+        bottom 0
+        right 8px
+        margin 0
+
+        &:not(:hover)
+          background transparent
 
 .md-surface.list-button
   elevation 0

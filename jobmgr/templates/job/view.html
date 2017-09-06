@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% block content %}
-<div class="content">
+<div class="content md-container">
 <div class="flow-column md-surface md-container">
 
 <span class="md-text md-text-caption">Job name</span>
@@ -24,6 +24,10 @@
       {% else %}
         <span class="second-line state-running">running</span>
         <span class="topright-line">started {{ task.started }}</span>
+      {% endif %}
+
+      {% if task.failed %}
+        {# <button class="md-surface md-button md-button-text bottomright-line">Retry</button> #}
       {% endif %}
     </div>
   {% empty %}

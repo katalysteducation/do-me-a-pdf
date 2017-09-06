@@ -15,19 +15,17 @@ body > header:first-child {
   left: 0;
   top: 0;
   right: 0;
-  padding-left: calc(50% - 42em / 2);
-  padding-right: calc(50% - 42em / 2);
+  padding-left: calc(50vw - 42em / 2);
+  padding-right: calc(50vw - 42em / 2);
 }
 body > header:first-child > div.title {
   line-height: 48px;
-  padding-left: 16px;
 }
 body > header:first-child > div.fill {
   flex: 1;
 }
 body > header:first-child > div.user-info {
   padding-top: 6px;
-  padding-right: 16px;
   text-align: right;
 }
 body > header:first-child > div.user-info > * {
@@ -47,10 +45,14 @@ body > .content {
   top: 48px;
   right: 0;
   bottom: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
-body > .content > * {
-  margin: 8px calc(50% - 42em/2) 8px calc(50% - 42em/2);
+body > .content >* {
+  --content-padding-top: 8px;
+  --content-padding-right: calc(100% - 42em - (50vw - 42em/2) - 16px);
+  --content-padding-bottom: 8px;
+  --content-padding-left: calc(50vw - 42em/2 - 16px);
+  --content-spacing: 8px;
 }
 .list > :not(:first-child) {
   border-top: 1px solid var(--color-divider);
@@ -83,6 +85,23 @@ body > .content > * {
   right: 16px;
   color: var(--color-text-secondary);
   text-align: right;
+}
+.list > .two-line-list-item > .bottomright-line {
+  position: absolute;
+  bottom: calc((60px - 2em) / 2);
+  right: 16px;
+  text-align: right;
+}
+.list > .two-line-list-item > .bottomright-line:not(.md-button) {
+  color: var(--color-text-secondary);
+}
+.list > .two-line-list-item > .bottomright-line.md-button {
+  bottom: 0;
+  right: 8px;
+  margin: 0;
+}
+.list > .two-line-list-item > .bottomright-line.md-button:not(:hover) {
+  background: transparent;
 }
 .md-surface.list-button {
   --self-elevation: 0px;
