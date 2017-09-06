@@ -17,9 +17,13 @@ class Command(BaseCommand):
 
     path = os.path.join(settings.CNX_OER_EXPORTS, 'css', 'ccap-*.css')
     styles = list(map(map_style, glob(path)))
+    to_delete = set(map(lambda x: x.name, BookStyle.objects.all())).difference(styles)
 
-    for style in set(map(lambda x: x.name, BookStyle.objects.all())).difference(styles):
-      style.delete()
+    print('all styles:', ' '.join(styles))
+    print('to delete: ', ' '.join(to_delete))
+
+    for style in to_delete:
+      BookStyle.objects.get(name=style).delete()
 
     for style in styles:
       BookStyle.objects.get_or_create(name=style)
