@@ -1,8 +1,12 @@
 {% extends "_base.html" %}
+
+{% block head %}
+  {% load static %}
+  <script type="text/javascript" src="{% static 'joblib.js' %}" defer></script>
+{% endblock %}
+
 {% block content %}
 <div class="content md-container">
-
-<!-- FORM -->
 <form action="{% url 'job.new' %}" method="post" enctype="multipart/form-data" class="flow-column md-surface md-container">
   {% csrf_token %}
 
@@ -37,7 +41,7 @@
 
   <!-- ZIP SOURCE -->
   <div class="source-option">
-    <input type="radio" name="collection_source" value="zip" checked id="source-zip">
+    <input type="radio" name="collection_source" value="collection.zip" checked id="source-zip">
     <label for="source-zip">
       <span>Zipped collection</span>
       <span>Upload and render a zipped collection</span>
@@ -46,14 +50,14 @@
     <div class="content flow-column">
       <div class="collection-zip flow-column">
         <span class="md-text md-text-caption">Collection ZIP</span>
-        <input type="file" name="collection_zip" accept="application/zip">
+        <input type="file" id="collection_zip" accept="application/zip">
       </div>
     </div>
   </div>
 
   <!-- LEGACY SOURCE -->
   <div class="source-option">
-    <input type="radio" name="collection_source" value="legacy" id="source-legacy">
+    <input type="radio" name="collection_source" value="legacy" id="source-legacy" disabled>
     <label for="source-legacy">
       <span>Collection on CNX Legacy</span>
       <span>Download collection from CNX Legacy</span>
@@ -65,9 +69,19 @@
   <span class="divider"></span>
 
   <div class="md-surface md-button-bar">
-    <input type="submit" value="Create job" class="md-surface md-button md-button-text">
+    <input id="submit" type="button" value="Create job" class="md-surface md-button md-button-text">
   </div>
 </form>
+</div>
 
+<!-- UPLOAD PROGRESS -->
+<div class="progress">
+  <!-- steps -->
+  <span class="md started">Creating new job</span>
+  <span class="md">Uploading</span>
+  <span class="md">Processing</span>
+  <!-- indicators -->
+  <div class="md progress linear indeterminate"><div></div></div>
+  <span class="md text-caption detail"></span>
 </div>
 {% endblock %}

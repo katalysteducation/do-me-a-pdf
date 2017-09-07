@@ -2,7 +2,8 @@
 @require 'material-style/mixins'
 
 :root
-  primary-color teal '500'
+  // primary-color teal '500'
+  primary-color blue '700'
   accent-color purple '600'
 
 body
@@ -185,6 +186,54 @@ div.source-option
 
   > div.content
     margin-top 8px
+
+body > div.progress
+  position absolute
+  top 50vh
+  left calc(50vw - 24em/2)
+  right calc(100% - 24em - (50vw - 24em/2))
+  padding-top 1.2em
+
+  > span
+    display block
+    transition var(--self-duration) transform var(--self-easing),
+               var(--self-duration) opacity var(--self-easing)
+
+  > span:not(.detail)
+    position absolute
+    text-align center
+    top 0
+    left 0
+    right 0
+
+    &:not(.started)
+      transform translateY(1em)
+      opacity 0
+
+    &.done
+      transform translateY(-1em)
+      opacity 0
+
+  > .detail
+    text-align right
+    color var(--color-primary)
+    opacity 0
+    transform translateY(-1em)
+    margin-top -4px
+
+  &.step-upload > .detail
+    transform translateY(0)
+    opacity 1
+
+body:not(.upload-started) > div.progress
+  display none
+
+body.upload-started
+  > .content
+    transition var(--self-duration) transform var(--self-easing),
+               var(--self-duration) opacity var(--self-easing)
+    opacity 0
+    transform translateY(-16px)
 
 //
 // Job view

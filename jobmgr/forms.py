@@ -3,29 +3,29 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+class ArtifactForm(forms.Form):
+  TYPES = tuple(map(lambda x: (x, x), (
+    'unknown', 'collection.zip',
+  )))
+
+  type = forms.ChoiceField(choices=TYPES)
+  content = forms.FileField()
+
 def book_styles():
   from .models import BookStyle
   return map(lambda x: (x.name, x.name), BookStyle.objects.all())
 
 class NewJobForm(forms.Form):
-  SOURCES = tuple(map(lambda x: (x, x), (
-    'zip',
-    'legacy',
-  )))
-
   name = forms.CharField(required=False)
   reduce_quality = forms.BooleanField()
   book_style = forms.ChoiceField(choices=book_styles)
+
+  SOURCES = tuple(map(lambda x: (x, x), (
+    'collection.zip',
+    # 'legacy',
+  )))
+
   collection_source = forms.ChoiceField(choices=SOURCES)
-
-  collection_zip = forms.FileField(required=False)
-
-  def clean(self):
-    cleaned_data = super().clean()
-    source = cleaned_data.get('collection_source')
-
-    if source and 'collection_zip' in cleaned_data and not cleaned_data.get('collection_zip'):
-      raise forms.ValidationError("Collection ZIP is missing")
 
 def validate_email(value):
   domain = value.rsplit('@', 1)[-1]

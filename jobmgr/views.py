@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
 from django.core.files.base import File
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.shortcuts import render, reverse
 from django.template.loader import render_to_string
@@ -14,17 +15,18 @@ from django.utils.encoding import force_bytes
 from django.utils.encoding import smart_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.http import urlsafe_base64_encode
+from django.views.decorators.http import require_http_methods
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from .forms import NewJobForm, NewUserForm
-from .models import Artifact, ArtifactType, JobOptions, Job, BookStyle
+from . import forms
+from .models import Artifact, ArtifactType, JobOptions, Job, JobSource, BookStyle
 from .tasks import unpack_collection_zip
 from .tokens import account_activation_token
 
 def signup(request):
   if request.method == 'POST':
-    form = NewUserForm(request.POST)
+    form = forms.NewUserForm(request.POST)
     if form.is_valid():
       user = form.save(commit=False)
       user.is_active = False
@@ -41,7 +43,7 @@ def signup(request):
       user.email_user(subject, message, fail_silently=False)
       return render(request, 'registration/activation_sent.html', {})
   else:
-    form = NewUserForm()
+    form = forms.NewUserForm()
   return render(request, 'registration/new.html', {'form': form})
 
 def activate(request, uidb64, token):
@@ -83,6 +85,52 @@ class JobView(StaticContextMixin, LoginRequiredMixin, DetailView):
   template_name = 'job/view.html'
   context = { 'title': 'Job details' }
 
+# /job/<id>/start
+@login_required
+@require_http_methods('POST')
+def job_start(request, job_id):
+  try:
+    job = Job.objects.get(pk=job_id)
+  except (Job.DoesNotExist, Artifact.DoesNotExist):
+    raise Http404()
+
+  if job.source == JobSource.COLLECTION_ZIP:
+    unpack_collection_zip.delay(job.pk)
+  else:
+    raise NotImplementedError()
+
+  return HttpResponse(status=202)
+
+# /job/<id>/media
+@login_required
+@require_http_methods('POST')
+def job_add_artifact(request, job_id):
+  try:
+    job = Job.objects.get(pk=job_id)
+  except (Job.DoesNotExist, Artifact.DoesNotExist):
+    raise Http404()
+
+  form = forms.ArtifactForm(request.POST, request.FILES)
+  if not form.is_valid():
+    return HttpResponseBadRequest(form.errors)
+
+  type = form.cleaned_data['type']
+  if type == 'unknown':
+    type = ArtifactType.UNKNOWN
+  elif type == 'collection.zip':
+    type = ArtifactType.COLLECTION_ZIP
+  else:
+    raise RuntimeError('type={!r} should not have been accepted'.format(type))
+
+  uf = request.FILES['content']
+  artifact = Artifact(name=uf.name, file=uf, type=type)
+  artifact.save()
+  job.artifacts.add(artifact)
+
+  rsp = HttpResponse(status=201)
+  rsp['Location'] = reverse('job.media', args=[job.pk, artifact.name])
+  return rsp
+
 # /job/<id>/media/<name>
 @login_required
 def job_media(request, job_id, name):
@@ -102,48 +150,43 @@ def job_media(request, job_id, name):
 # /job/new
 @login_required
 def job_new(request):
+  status_code = 200
   if request.method == 'POST':
-    form = NewJobForm(request.POST, request.FILES)
+    form = forms.NewJobForm(request.POST)
     if form.is_valid():
-      job = add_new_job(request, form)
-      return HttpResponseRedirect(reverse('job.view', args=[job.id]))
+      return add_new_job(request, form)
+    status_code = 400
   else:
-    form = NewJobForm()
+    form = forms.NewJobForm()
 
   return render(request, 'job/new.html', {
     'form': form,
     'title': 'New job',
     'styles': sorted(BookStyle.objects.all(), key=lambda x: x.name),
-  })
+  }, status=status_code)
 
 def add_new_job(request, form):
-  name = form['name'].value()
-  source = form['collection_source'].value()
-  reduce_quality = form['reduce_quality'].value()
-  style = BookStyle.objects.get(name=form['book_style'].value())
+  name = form.cleaned_data['name']
+  reduce_quality = form.cleaned_data['reduce_quality']
+  style = BookStyle.objects.get(name=form.cleaned_data['book_style'])
 
   if not name:
     name = str(datetime.now())
 
-  job = Job(name=name)
+  source = form.cleaned_data['collection_source']
+  if source == 'collection.zip':
+    source = JobSource.COLLECTION_ZIP
+  else:
+    raise RuntimeError('collection_source={!r} should not have been accepted'.format(source))
+
+  job = Job(name=name, source=source)
   job.clean()
   job.save()
 
   options = JobOptions(job=job, reduce_quality=reduce_quality, style=style)
   options.save()
 
-  if source == 'zip':
-    load_collection_zip(request, job)
-  else:
-    raise RuntimeError('Illegal collection_source value ({!r}) passed validation' \
-      .format(source))
-
-  unpack_collection_zip.delay(job.pk)
-
-  return job
-
-def load_collection_zip(request, job):
-  uf = request.FILES['collection_zip']
-  artifact = Artifact(name=uf.name, file=uf, type=ArtifactType.COLLECTION_ZIP)
-  artifact.save()
-  job.artifacts.add(artifact)
+  rsp = HttpResponse('OK', status=201)
+  rsp['Location'] = reverse('job.view', args=[job.pk])
+  rsp['X-Job-Name'] = name
+  return rsp

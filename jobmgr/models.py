@@ -84,12 +84,17 @@ class Artifact(models.Model):
   def __str__(self):
     return '<Artifact {} ({}) {}>'.format(self.name, self.file.url, self.created)
 
+class JobSource(Enum):
+  COLLECTION_ZIP  = 1
+
 class Job(models.Model):
   """A structured batch of tasks"""
 
   # Job name
   name = models.CharField(max_length=128, unique=True)
-
+  # Job data source
+  source = EnumField(JobSource)
+  # Artifacts connected with this job
   artifacts = models.ManyToManyField(Artifact)
 
   def __str__(self):
