@@ -106,7 +106,7 @@ MEDIA_URL = '/media/'
 
 # Make uploaded files readable by group
 # https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-permissions
-FILE_UPLOAD_PERMISSIONS = 0o640
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 # Celery settings
 
