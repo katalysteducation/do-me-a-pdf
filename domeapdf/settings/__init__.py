@@ -104,6 +104,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+# Make uploaded files readable by group
+# https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-permissions
+FILE_UPLOAD_PERMISSIONS = 0o640
+
 # Celery settings
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
