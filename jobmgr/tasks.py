@@ -102,6 +102,13 @@ def generate_pdf(job, task, tmp):
 
     xhtml = baked
 
+  # Copy collection.xhtml to temp directory
+
+  xhtml_path = os.path.join(out_dir, 'collection.xhtml')
+  if not exec(['cp', xhtml.file.path, xhtml_path], None, outlog, errlog):
+    task.fail('Cannot copy collection.xhtml to temporary directory')
+    return
+
   # Generate PDF
 
   pdf = Artifact.create('collection.pdf', str(job.pk), ArtifactType.GENERATED_PDF)
@@ -111,7 +118,7 @@ def generate_pdf(job, task, tmp):
     'prince',
     '-s', os.path.join(path, 'css', options.style.name + '.css'),
     '-o', pdf.file.path,
-    xhtml.file.path,
+    xhtml_path,
   ]
 
   if not exec(args, path, outlog, errlog):
