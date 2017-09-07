@@ -93,8 +93,7 @@ def generate_pdf(job, task, tmp):
     task.attach(baked)
 
     args = [
-      path + '/bin/cnx-easybake',
-      recipy, xhtml.file.path, baked.file.path,
+      'cnx-easybake', recipy, xhtml.file.path, baked.file.path,
     ]
 
     if not exec(args, path, outlog, errlog):
