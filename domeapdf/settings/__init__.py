@@ -30,6 +30,7 @@ INSTALLED_APPS = [
   'django.contrib.sessions',
   'django.contrib.messages',
   'django.contrib.staticfiles',
+  'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -110,4 +111,17 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 
 # Celery settings
 
+from celery.schedules import crontab
+
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULE = {
+  'clean-old-artifacts': {
+    'task': 'jobmgr.tasks.clean_artifacts',
+    'schedule': crontab(hour=0, minute=0),
+  },
+  'clean-orphaned-files': {
+    'task': 'jobmgr.tasks.clean_orphaned_files',
+    'schedule': crontab(hour=0, minute=0),
+  }
+}

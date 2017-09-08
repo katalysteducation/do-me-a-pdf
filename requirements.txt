@@ -4,3 +4,4 @@ gunicorn
 psycopg2
 toml
 python-magic
+django-celery-beat

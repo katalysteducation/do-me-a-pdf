@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile, File
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from enum import Enum
 
@@ -83,6 +83,10 @@ class Artifact(models.Model):
 
   def __str__(self):
     return '<Artifact {} ({}) {}>'.format(self.name, self.file.url, self.created)
+
+@receiver(pre_delete, sender=Artifact)
+def delete_file_on_delete(sender, instance, **kwargs):
+  instance.file.delete(False)
 
 class JobSource(Enum):
   COLLECTION_ZIP  = 1

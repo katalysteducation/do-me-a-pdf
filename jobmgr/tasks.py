@@ -3,9 +3,50 @@ import shutil
 import subprocess
 import tempfile
 from celery import shared_task
+from datetime import datetime, timedelta
 from django.conf import settings
 
 from .models import Artifact, ArtifactType, Job, Task, TaskState
+
+@shared_task
+def clean_artifacts():
+  started = datetime.now()
+  old = datetime.now() - timedelta(days=1)
+
+  artifacts = Artifact.objects.filter(created__lte=old) \
+                              .exclude(type=ArtifactType.GENERATED_PDF) \
+                              .prefetch_related('job_set')
+  jobs = {job for a in artifacts for job in a.job_set.all()}
+
+  for artifact in artifacts:
+    artifact.delete()
+
+  finished = datetime.now()
+
+  for job in jobs:
+    Task.objects.create(name='Remove old artifacts',
+                        job=job,
+                        started=started,
+                        finished=finished,
+                        state=TaskState.COMPLETED)
+
+@shared_task
+def clean_orphaned_files():
+  for root, dirs, files in os.walk(settings.MEDIA_ROOT):
+
+    media_root = root.replace(settings.MEDIA_ROOT, '')[1:]
+    for file in map(lambda x: os.path.join(media_root, x), files):
+      if not Artifact.objects.filter(file=file).exists():
+        print('removing orphaned file', file)
+        os.remove(os.path.join(settings.MEDIA_ROOT, file))
+
+    for dir in map(lambda x: os.path.join(root, x), dirs):
+      try:
+        os.rmdir(dir)
+        print('removing empty directory', dir)
+      except OSError as ex:
+        if ex.errno != os.errno.ENOTEMPTY:
+          raise
 
 @shared_task
 def unpack_collection_zip(job_id):
