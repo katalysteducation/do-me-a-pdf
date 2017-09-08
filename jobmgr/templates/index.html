@@ -3,8 +3,17 @@
 {% block content %}
 
 <div class="index">
-  <a class="md-surface md-real md-button md-button-text md-button-raised" href="{% url 'job.list' %}">View all jobs</a>
-  <a class="md-surface md-real md-button md-button-text md-button-raised" href="{% url 'job.new' %}">Create a new job</a>
+  <div class="main-tasks">
+    <a class="md-surface md-real md-button md-button-text md-button-raised" href="{% url 'job.list' %}">View all jobs</a>
+    <a class="md-surface md-real md-button md-button-text md-button-raised" href="{% url 'job.new' %}">Create a new job</a>
+  </div>
+
+  <form class="admin-tasks" method="post">
+    <span class="md text-caption">Admin tasks</span>
+    {% csrf_token %}
+    <input type="submit" class="md-surface md-real md-button md-button-text md-button-raised" formaction="{% url 'admin.clean-artifacts' %}" value="Clean artifacts"/>
+    <input type="submit" class="md-surface md-real md-button md-button-text md-button-raised" formaction="{% url 'admin.clean-orphans' %}" value="Clean orphaned files"/>
+  </form>
 </div>
 
 {% endblock %}

@@ -33,7 +33,19 @@
   </header>
 {% endblock %}
 
+{% block messages %}
+  {% if messages %}
+  <div class="messages md-surface md-real">
+    {% for message in messages %}
+    <span class="md text-body {{ message.tags }}">{{ message }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endblock %}
+
+<div class="content">
 {% block content %}
 {% endblock %}
+</div>
 </body>
 </html>

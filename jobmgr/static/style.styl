@@ -1,24 +1,33 @@
 @require 'material-style/colors'
 @require 'material-style/mixins'
 
+width = 42em
+padding-left = "calc(50vw - %s/2)" % width
+padding-right = "calc(100% - %s - (50vw - %s/2))" % (width width)
+
 :root
   // primary-color teal '500'
   primary-color blue '700'
   accent-color purple '600'
 
 body
-  margin-top 48px + 8px
-  margin-bottom 8px
+  position fixed
+  left 0
+  top 0
+  right 0
+  bottom 0
+  // margin-top 48px + 8px
+  // margin-bottom 8px
+
+  display flex
+  flex-direction column
 
 body > header:first-child
   elevation 4
   height 48px
   display flex
 
-  position fixed
-  left 0
-  top 0
-  right 0
+  position relative // to prevent shadow clipping
   padding-left calc(50vw - 42em/2)
   padding-right calc(50vw - 42em/2)
 
@@ -43,19 +52,28 @@ body > header:first-child
     border-left 1px solid var(--color-divider)
     margin 8px
 
+body > div.messages
+  elevation 2
+
+  margin-left calc(50vw - 42em/2 - 16px)
+  margin-right calc(50vw - 42em/2 - 16px)
+  padding-left 16px
+  padding-right 16px
+
+  > span
+    display block
+    min-height 36px
+    line-height 36px
+
+  > span + span
+    border-top 1px solid var(--color-divider)
+
 body > .content
-  width = 42em
-  padding-left = "calc(50vw - %s/2 - 16px)" % width
-  padding-right = "calc(100% - %s - (50vw - %s/2) - 16px)" % (width width)
-
-  position absolute
-  left 0
-  top 48px
-  right 0
-  bottom 0
   overflow-y auto
+  flex 1
 
-  content-padding 8px padding-right 8px padding-left 8px
+  > .content
+    content-padding 8px "calc(%s - 16px)" % padding-right 8px "calc(%s - 16px)" % padding-left 8px
 
 .list
   > :not(:first-child)
@@ -142,6 +160,30 @@ span.divider
   margin-top var(--margin-top)
 
 //
+// Index
+//
+
+div.index
+  > *
+    padding-left padding-left
+    padding-right padding-right
+
+  > .main-tasks
+  > .admin-tasks
+    text-align right
+    margin-top 16px
+
+  > .admin-tasks
+    border-top 1px solid var(--color-divider)
+
+    > :first-child
+      display block
+      text-align left
+      height 36px
+      line-height 36px
+      vertical-align middle
+
+//
 // Login page
 //
 
@@ -187,7 +229,7 @@ div.source-option
   > div.content
     margin-top 8px
 
-body > div.progress
+body > div.content > div.progress
   position absolute
   top 50vh
   left calc(50vw - 24em/2)
@@ -225,15 +267,14 @@ body > div.progress
     transform translateY(0)
     opacity 1
 
-body:not(.upload-started) > div.progress
+body:not(.upload-started) > div.content > div.progress
   display none
 
-body.upload-started
-  > .content
-    transition var(--self-duration) transform var(--self-easing),
-               var(--self-duration) opacity var(--self-easing)
-    opacity 0
-    transform translateY(-16px)
+body.upload-started > .content > .content
+  transition var(--self-duration) transform var(--self-easing),
+             var(--self-duration) opacity var(--self-easing)
+  opacity 0
+  transform translateY(-16px)
 
 //
 // Job view

@@ -18,4 +18,8 @@ urlpatterns = [
   # GET   /job/new                - render new job form
   # POST  /job/new                - create a new job
   url(r'^job/new/$', views.job_new, name='job.new'),
+  # POST  /admin/clean-artifacts  - clean old artifacts
+  url(r'^admin/clean-artifacts', views.admin_clean_artifacts, name='admin.clean-artifacts'),
+  # POST  /admin/clean-orphans    - clean orphaned files
+  url(r'^admin/clean-orphans', views.admin_clean_orphans, name='admin.clean-orphans'),
 ]

@@ -1,5 +1,10 @@
 {% extends "_base.html" %}
 
+{% block head %}
+  {% load static %}
+  <script type="text/javascript" src="{% static 'joblib.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="content md-container">
 <div class="flow-column md-surface md-container">
@@ -9,9 +14,9 @@
 
 <span class="md-text md-text-caption divider">Job tasks</span>
 
-<div class="list">
+<div class="list" id="tasks">
   {% for task in object.task_set.all %}
-    <div class="two-line-list-item">
+    <div class="two-line-list-item" id="task-{{ task.pk }}">
       <span class="first-line">{{ task.name }}</span>
 
       {% if task.completed %}
@@ -54,4 +59,15 @@
 
 </div>
 </div>
+
+<template id="task-details">
+  <div class="two-line-list-item">
+    <span class="first-line"></span>
+    <span class="second-line"></span>
+    <span class="third-line"></span>
+    <span class="topright-line"></span>
+  </div>
+</template>
+
+<script type="text/javascript">start_job_view()</script>
 {% endblock %}

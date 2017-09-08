@@ -1,5 +1,6 @@
 import magic
 from datetime import datetime
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,9 +20,8 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from . import forms
+from . import forms, tasks
 from .models import Artifact, ArtifactType, JobOptions, Job, JobSource, BookStyle
-from .tasks import unpack_collection_zip
 from .tokens import account_activation_token
 
 def signup(request):
@@ -95,7 +95,7 @@ def job_start(request, job_id):
     raise Http404()
 
   if job.source == JobSource.COLLECTION_ZIP:
-    unpack_collection_zip.delay(job.pk)
+    tasks.unpack_collection_zip.delay(job.pk)
   else:
     raise NotImplementedError()
 
@@ -190,3 +190,21 @@ def add_new_job(request, form):
   rsp['Location'] = reverse('job.view', args=[job.pk])
   rsp['X-Job-Name'] = name
   return rsp
+
+@login_required
+@require_http_methods('POST')
+def admin_clean_artifacts(request):
+  messages.info(request, 'Cleaning was scheduled')
+
+  tasks.clean_artifacts.delay()
+
+  return HttpResponseRedirect(reverse('index'))
+
+@login_required
+@require_http_methods('POST')
+def admin_clean_orphans(request):
+  messages.info(request, 'Cleaning was scheduled')
+
+  tasks.clean_orphaned_files.delay()
+
+  return HttpResponseRedirect(reverse('index'))
