@@ -145,6 +145,7 @@ def job_media(request, job_id, name):
   rsp = HttpResponse(content_type=mime)
   rsp['Content-Disposition'] = 'inline; filename={}'.format(smart_str(artifact.name))
   rsp['X-Accel-Redirect'] = artifact.file.url
+  print(rsp['X-Accel-Redirect'])
   return rsp
 
 # /job/new
