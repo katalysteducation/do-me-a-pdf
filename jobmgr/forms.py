@@ -17,7 +17,7 @@ def book_styles():
 
 class NewJobForm(forms.Form):
   name = forms.CharField(required=False)
-  reduce_quality = forms.BooleanField()
+  reduce_quality = forms.BooleanField(required=False, initial=False)
   book_style = forms.ChoiceField(choices=book_styles)
 
   SOURCES = tuple(map(lambda x: (x, x), (
