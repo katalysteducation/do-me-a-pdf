@@ -56,18 +56,14 @@ def unpack_collection_zip(job_id):
   except Job.DoesNotExist as ex:
     raise RuntimeError('Pending task for a deleted job') from ex
 
-  # Find the collection ZIP to unpack
-  try:
-    artifact = job.artifacts.filter(type=ArtifactType.COLLECTION_ZIP).get()
-  except Artifact.DoesNotExist as ex:
-    return task.fail(ex)
-
   # Create a temporary directory to extract collection to
   temp = tempfile.mkdtemp()
   try: # < ensure temp is always deleted
 
     # Unpack collection
     with Task.new(job, 'Unpack collection ZIP'):
+      # Find the collection ZIP to unpack
+      artifact = job.artifacts.filter(type=ArtifactType.COLLECTION_ZIP).get()
       unpack_zip(temp, artifact.file.path)
 
     # Generate PDF
