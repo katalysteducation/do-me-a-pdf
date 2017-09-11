@@ -159,6 +159,9 @@ span.divider
   margin 0
   margin-top var(--margin-top)
 
+span.md.validation-message
+  color red['500']
+
 //
 // Index
 //
@@ -275,6 +278,15 @@ body.upload-started > .content > .content
              var(--self-duration) opacity var(--self-easing)
   opacity 0
   transform translateY(-16px)
+
+div.error-message:not(.hidden)
+  margin-top 16px
+
+  &::before
+    content 'Error'
+    display block
+    font-size 12px
+    color var(--color-text-secondary)
 
 //
 // Job view

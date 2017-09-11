@@ -50,7 +50,7 @@
     <div class="content flow-column">
       <div class="collection-zip flow-column">
         <span class="md-text md-text-caption">Collection ZIP</span>
-        <input type="file" id="collection_zip" accept="application/zip">
+        <input type="file" id="collection_zip" accept="application/zip" required>
       </div>
     </div>
   </div>
@@ -83,5 +83,7 @@
   <!-- indicators -->
   <div class="md progress linear indeterminate"><div></div></div>
   <span class="md text-caption detail"></span>
+  <!-- error message -->
+  <div class="error-message hidden"></div>
 </div>
 {% endblock %}

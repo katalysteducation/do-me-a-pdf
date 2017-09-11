@@ -298,6 +298,9 @@ div.md.progress.linear {
   margin: 4px 0px 4px 0px;
   background-color: #bbdefb;
 }
+div.md.progress.linear.error {
+  background-color: #ffcdd2;
+}
 div.md.progress.linear > :first-child {
   display: block;
   position: relative;
@@ -308,6 +311,9 @@ div.md.progress.linear > :first-child {
 }
 div.md.progress.linear.determinate > :first-child {
   background-color: #1976d2;
+}
+div.md.progress.linear.determinate.error > :first-child {
+  background-color: #d32f2f;
 }
 div.md.progress.linear.indeterminate > :first-child {
   width: 100%;
@@ -328,6 +334,11 @@ div.md.progress.linear.indeterminate > :first-child::before {
 div.md.progress.linear.indeterminate > :first-child::after {
   animation: -md-indeterminate-after 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
   animation-delay: 1.15s;
+}
+div.md.progress.linear.indeterminate.error > :first-child::before,
+div.md.progress.linear.indeterminate.error > :first-child::after {
+  background-color: #d32f2f;
+  animation-iteration-count: 1;
 }
 @-moz-keyframes -md-indeterminate-before {
   0% {

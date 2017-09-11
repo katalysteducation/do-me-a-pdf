@@ -32,16 +32,16 @@ function formatSize(bytes) {
   return (bytes / 1024/1024/1024/1024).toFixed(1) + ' TiB'
 }
 
-let submit = $('#submit')
-if (submit) submit.addEventListener('click', async ev => {
+/**
+ * Create a job.
+ */
+async function create_job() {
   let html_form = $('form')
   let progress = $('.progress')
   let bar = $('.md.progress')
   let fill = $('.md.progress>div')
   let csrf_token = $('[name=csrfmiddlewaretoken]').value
-  let form = new FormData(html_form)
 
-  document.body.classList.add('upload-started')
   let _last_class = null
   function step(num, name, text=null) {
     progress.classList.remove(_last_class)
@@ -54,8 +54,37 @@ if (submit) submit.addEventListener('click', async ev => {
     }
   }
 
+  function show_error(err) {
+    let msg = $('.progress>.error-message')
+    msg.innerHTML = err
+    msg.classList.remove('hidden')
+    bar.classList.add('error')
+    console.log(err)
+  }
+
+  // Step -1: Validate the form
+
+  let valid = true
+  for (let input of html_form) {
+    if (!input.checkValidity()) {
+      valid = false
+
+      let msg = document.createElement('span')
+      msg.innerText = input.validationMessage
+      msg.classList.add('md', 'text-caption', 'validation-message')
+      input.parentElement.insertBefore(msg, input.nextSibling)
+    }
+  }
+
+  if (!valid) {
+    return
+  }
+
+  document.body.classList.add('upload-started')
+
   // Step 0: Create a new job
 
+  let form = new FormData(html_form)
   let rst = await fetch('/job/new/', {
     method: 'POST',
     credentials: 'same-origin',
@@ -63,8 +92,7 @@ if (submit) submit.addEventListener('click', async ev => {
   })
 
   if (rst.status !== 201) {
-    // TODO: notify of errors
-    return
+    return show_error(await rst.text())
   }
 
   let location = rst.headers.get('Location')
@@ -100,9 +128,21 @@ if (submit) submit.addEventListener('click', async ev => {
       fill.style.width = ev.loaded / ev.total * 100 + '%'
       detail.innerText = formatSize(ev.loaded) + ' / ' + formatSize(size)
     }
-    xhr.upload.onabort = ev => reject()
-    xhr.upload.onerror = ev => reject()
-    xhr.upload.onload = ev => resolve()
+    xhr.onreadystatechange = ev => {
+      console.log(xhr.readyState, xhr.status)
+      if (xhr.readyState !== 4) {
+        return
+      }
+      if (xhr.status === 201) {
+        return resolve()
+      }
+      console.log(xhr)
+      show_error(Object.entries(JSON.parse(xhr.responseText)).map(([field, messages]) =>
+        `<dt>${field}</dt><dd><ul>${
+          messages.map(({ message }) => `<li>${ message }</li>`).join('')
+        }</ul></dd>`).join(''))
+      reject()
+    }
     xhr.send(form)
   })
 
@@ -121,7 +161,12 @@ if (submit) submit.addEventListener('click', async ev => {
   })
 
   if (r.status != 202) {
-    // TODO: raise problem
+    return show_error(await rst.text())
   }
   window.location = location
-})
+}
+
+// If it's the new job form then register submit event
+let submit = $('#submit')
+console.log('submit:', submit)
+if (submit) { submit.addEventListener('click', create_job) }

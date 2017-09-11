@@ -92,8 +92,10 @@ class JobView(StaticContextMixin, LoginRequiredMixin, DetailView):
 def job_start(request, job_id):
   try:
     job = Job.objects.get(pk=job_id)
-  except (Job.DoesNotExist, Artifact.DoesNotExist):
+  except Job.DoesNotExist:
     raise Http404()
+  except Artifact.DoesNotExist as ex:
+    return HttpResponse(ex, status=500)
 
   if job.source == JobSource.COLLECTION_ZIP:
     tasks.unpack_collection_zip.delay(job.pk)
@@ -113,7 +115,7 @@ def job_add_artifact(request, job_id):
 
   form = forms.ArtifactForm(request.POST, request.FILES)
   if not form.is_valid():
-    return HttpResponseBadRequest(form.errors)
+    return HttpResponseBadRequest(form.errors.as_json())
 
   type = form.cleaned_data['type']
   if type == 'unknown':
