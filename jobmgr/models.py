@@ -5,6 +5,7 @@ from django.core.files.base import ContentFile, File
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
+from django.utils import timezone
 from enum import Enum
 
 class Profile(models.Model):
@@ -63,7 +64,7 @@ class Artifact(models.Model):
   # Artifact name
   name = models.CharField(max_length=128)
   # Time the artifact was created
-  created = models.DateTimeField(default=datetime.now)
+  created = models.DateTimeField(default=timezone.now)
   # Artifact data
   file = models.FileField(upload_to='%Y/%m/%d')
   # Artifact type
@@ -98,6 +99,8 @@ class Job(models.Model):
   name = models.CharField(max_length=128, unique=True)
   # Job creator
   creator = models.ForeignKey(User, null=True)
+  # Date created
+  created = models.DateTimeField(default=timezone.now)
   # Job data source
   source = EnumField(JobSource)
   # Artifacts connected with this job
@@ -119,7 +122,7 @@ class Task(models.Model):
   # Parent job
   job = models.ForeignKey(Job)
   # Time the task was started
-  started = models.DateTimeField(default=datetime.now)
+  started = models.DateTimeField(default=timezone.now)
   # Time the task was ended, null if it's still running
   finished = models.DateTimeField(null=True, blank=True)
   # Task state
@@ -156,13 +159,13 @@ class Task(models.Model):
   def fail(self, message):
     self.state = TaskState.FAILED
     self.message = message
-    self.finished = datetime.now()
+    self.finished = timezone.now()
     self.save()
 
   def complete(self, message=None):
     self.state = TaskState.COMPLETED
     self.message = message
-    self.finished = datetime.now()
+    self.finished = timezone.now()
     self.save()
 
   def attach(self, *artifacts):

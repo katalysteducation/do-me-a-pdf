@@ -77,6 +77,7 @@ class StaticContextMixin:
 class JobList(StaticContextMixin, LoginRequiredMixin, ListView):
   model = Job
   template_name = 'job/list.html'
+  ordering = '-created'
   context = { 'title': 'Job list' }
 
 # /job/<id>

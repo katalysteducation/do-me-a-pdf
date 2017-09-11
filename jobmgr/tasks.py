@@ -5,13 +5,14 @@ import tempfile
 from celery import shared_task
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.utils import timezone
 
 from .models import Artifact, ArtifactType, Job, Task, TaskState
 
 @shared_task
 def clean_artifacts():
-  started = datetime.now()
-  old = datetime.now() - timedelta(days=1)
+  started = timezone.now()
+  old = timezone.now() - timedelta(days=1)
 
   artifacts = Artifact.objects.filter(created__lte=old) \
                               .exclude(type=ArtifactType.GENERATED_PDF) \
@@ -21,7 +22,7 @@ def clean_artifacts():
   for artifact in artifacts:
     artifact.delete()
 
-  finished = datetime.now()
+  finished = timezone.now()
 
   for job in jobs:
     Task.objects.create(name='Remove old artifacts',
