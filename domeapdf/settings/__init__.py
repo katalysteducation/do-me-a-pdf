@@ -31,6 +31,7 @@ INSTALLED_APPS = [
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'django_celery_beat',
+  'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -114,6 +115,7 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 from celery.schedules import crontab
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BEAT_SCHEDULE = {
   'clean-old-artifacts': {

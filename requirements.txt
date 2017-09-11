@@ -5,3 +5,4 @@ psycopg2
 toml
 python-magic
 django-celery-beat
+django-celery-results
