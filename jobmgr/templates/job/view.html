@@ -9,8 +9,15 @@
 <div class="content md-container">
 <div class="flow-column md-surface md-container">
 
-<span class="md-text md-text-caption">Job name</span>
-<span class="md-text md-text-title">{{ object.name }}</span>
+<div class="basic-information">
+  <span class="md-text md-text-caption">Job name</span>
+  <span class="md-text md-text-title">{{ object.name }}</span>
+
+  {% if object.creator %}
+  <span class="md text-caption">Created by</span>
+  <span class="md text-body">@{{ object.creator.username }}</span>
+  {% endif %}
+</div>
 
 <span class="md-text md-text-caption divider">Job tasks</span>
 

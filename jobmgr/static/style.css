@@ -261,6 +261,14 @@ body.upload-started > .content > .content {
   opacity: 0;
   transform: translateY(-16px);
 }
+div.content div.basic-information {
+  display: grid;
+  grid-template: auto auto/1fr auto;
+  grid-auto-flow: column;
+}
+div.content div.basic-information > span:nth-child(1) {
+  grid-area: 1 2/1 2;
+}
 .state-started {
   color: #808080;
 }

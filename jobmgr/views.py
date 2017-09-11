@@ -180,7 +180,7 @@ def add_new_job(request, form):
   else:
     raise RuntimeError('collection_source={!r} should not have been accepted'.format(source))
 
-  job = Job(name=name, source=source)
+  job = Job(name=name, source=source, creator=request.user)
   job.clean()
   job.save()
 

@@ -15,6 +15,9 @@
 {% for job in object_list %}
   <div class="single-line-list-item list-button md-surface md-real">
     <span class="first-line">{{ job.name }}</span>
+    {% if job.creator %}
+    <span class="topright-line">— @{{ job.creator.username }}</span>
+    {% endif %}
 
     <a href="{% url 'job.view' job.pk %}"><span></span></a>
   </div>

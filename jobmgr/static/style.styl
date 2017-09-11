@@ -280,6 +280,14 @@ body.upload-started > .content > .content
 // Job view
 //
 
+div.content div.basic-information
+  display grid
+  grid-template auto auto / 1fr auto
+  grid-auto-flow column
+
+  > span:nth-child(1)
+    grid-area 1 2 / 1 2
+
 .state-started
   color gray
 
