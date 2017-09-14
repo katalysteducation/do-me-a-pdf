@@ -126,7 +126,7 @@ def generate_pdf(job, task, tmp):
   # Bake XHTML
 
   recipy = os.path.join(path, 'recipes', options.style.name + '.css')
-  if os.path.exists(recipy):
+  if os.path.exists(recipy) and options.bake:
     baked = Artifact.create('collection.baked.xhtml', str(job.pk), ArtifactType.PROCESSING)
     task.attach(baked)
 

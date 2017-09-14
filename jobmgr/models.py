@@ -188,3 +188,5 @@ class JobOptions(models.Model):
   reduce_quality = models.BooleanField()
   # Book style
   style = models.ForeignKey(BookStyle)
+  # Enable recipe processing
+  bake = models.BooleanField()

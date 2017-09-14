@@ -173,6 +173,7 @@ def add_new_job(request, form):
   name = form.cleaned_data['name']
   reduce_quality = form.cleaned_data['reduce_quality']
   style = BookStyle.objects.get(name=form.cleaned_data['book_style'])
+  enable_baking = form.cleaned_data['enable_processing']
 
   if not name:
     name = str(datetime.now())
@@ -187,7 +188,10 @@ def add_new_job(request, form):
   job.clean()
   job.save()
 
-  options = JobOptions(job=job, reduce_quality=reduce_quality, style=style)
+  options = JobOptions(job=job,
+                       reduce_quality=reduce_quality,
+                       style=style,
+                       bake=enable_baking)
   options.save()
 
   rsp = HttpResponse('OK', status=201)
