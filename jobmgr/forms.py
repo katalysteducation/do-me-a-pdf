@@ -16,7 +16,6 @@ def book_styles():
   return map(lambda x: (x.name, x.name), BookStyle.objects.all())
 
 class NewJobForm(forms.Form):
-  name = forms.CharField(required=False)
   reduce_quality = forms.BooleanField(required=False, initial=False)
   book_style = forms.ChoiceField(choices=book_styles)
   enable_processing = forms.BooleanField(required=False, initial=False)

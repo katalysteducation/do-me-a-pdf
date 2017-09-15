@@ -1,5 +1,4 @@
 import magic
-from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -12,6 +11,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.shortcuts import render, redirect
 from django.shortcuts import render, reverse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.encoding import smart_str
 from django.utils.http import urlsafe_base64_decode
@@ -97,6 +97,23 @@ def job_start(request, job_id):
   except Artifact.DoesNotExist as ex:
     return HttpResponse(ex, status=500)
 
+  # Generate job name
+  if job.source == JobSource.COLLECTION_ZIP:
+    source = job.artifacts.get(type=ArtifactType.COLLECTION_ZIP)
+    name = source.name
+  else:
+    raise NotImplementedError()
+
+  options = job.joboptions_set.get()
+  name += ' in ' + options.style.name
+  if options.bake:
+    name += ' with processing'
+  name += ' (' + job.name + ')'
+
+  job.name = name
+  job.save()
+
+  # start job
   if job.source == JobSource.COLLECTION_ZIP:
     tasks.unpack_collection_zip.delay(job.pk)
   else:
@@ -170,13 +187,10 @@ def job_new(request):
   }, status=status_code)
 
 def add_new_job(request, form):
-  name = form.cleaned_data['name']
+  name = str(timezone.now())
   reduce_quality = form.cleaned_data['reduce_quality']
   style = BookStyle.objects.get(name=form.cleaned_data['book_style'])
   enable_baking = form.cleaned_data['enable_processing']
-
-  if not name:
-    name = str(datetime.now())
 
   source = form.cleaned_data['collection_source']
   if source == 'collection.zip':
