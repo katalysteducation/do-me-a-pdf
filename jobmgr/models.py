@@ -190,3 +190,5 @@ class JobOptions(models.Model):
   style = models.ForeignKey(BookStyle)
   # Enable recipe processing
   bake = models.BooleanField()
+  # Enable experimental MathML rendering (MathJax)
+  experimental_math = models.BooleanField()

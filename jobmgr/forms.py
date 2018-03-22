@@ -19,6 +19,7 @@ class NewJobForm(forms.Form):
   reduce_quality = forms.BooleanField(required=False, initial=False)
   book_style = forms.ChoiceField(choices=book_styles)
   enable_processing = forms.BooleanField(required=False, initial=False)
+  enable_experimental_math = forms.BooleanField(required=False, initial=False)
 
   SOURCES = tuple(map(lambda x: (x, x), (
     'collection.zip',

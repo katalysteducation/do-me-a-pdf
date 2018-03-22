@@ -108,6 +108,8 @@ def job_start(request, job_id):
   name += ' in ' + options.style.name
   if options.bake:
     name += ' with processing'
+  if options.experimental_math:
+    name += ' with experimental math rendering'
   name += ' (' + job.name + ')'
 
   job.name = name
@@ -191,6 +193,7 @@ def add_new_job(request, form):
   reduce_quality = form.cleaned_data['reduce_quality']
   style = BookStyle.objects.get(name=form.cleaned_data['book_style'])
   enable_baking = form.cleaned_data['enable_processing']
+  experimental_math = form.cleaned_data['enable_experimental_math']
 
   source = form.cleaned_data['collection_source']
   if source == 'collection.zip':
@@ -205,7 +208,8 @@ def add_new_job(request, form):
   options = JobOptions(job=job,
                        reduce_quality=reduce_quality,
                        style=style,
-                       bake=enable_baking)
+                       bake=enable_baking,
+                       experimental_math=experimental_math)
   options.save()
 
   rsp = HttpResponse('OK', status=201)

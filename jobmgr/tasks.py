@@ -113,7 +113,9 @@ def generate_pdf(job, task, tmp):
     path + '/collection2xhtml.py',
     '-d', collection_xml,
     '-t', out_dir,
-    xhtml.file.path
+    xhtml.file.path,
+    '-v',
+    '--math2svg', 'no' if options.experimental_math else 'yes',
   ]
 
   if options.reduce_quality:
@@ -122,6 +124,26 @@ def generate_pdf(job, task, tmp):
   if not exec(args, path, outlog, errlog):
     task.fail('CNXML to XHTML conversion failed')
     return
+
+  # Process with MathJax
+
+  if options.experimental_math:
+    math = Artifact.create('collection.math.xhtml', str(job.pk), ArtifactType.PROCESSING)
+    task.attach(math)
+
+    args = [
+      path + '/bin/phantomjs',
+      path + '/bin/typeset_math.js',
+      xhtml.file.path,
+      os.path.join(path, 'css', options.style.name + '.css'),
+      math.file.path,
+    ]
+
+    if not exec(args, path, outlog, errlog):
+      task.fail('Experimental MathML processing failed')
+      return
+
+    xhtml = math
 
   # Bake XHTML
 
