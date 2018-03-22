@@ -133,6 +133,7 @@ def generate_pdf(job, task, tmp):
 
     args = [
       path + '/bin/phantomjs',
+      '--debug=true',
       path + '/bin/typeset_math.js',
       xhtml.file.path,
       os.path.join(path, 'css', options.style.name + '.css'),
