@@ -96,7 +96,7 @@ class Job(models.Model):
   """A structured batch of tasks"""
 
   # Job name
-  name = models.CharField(max_length=128, unique=True)
+  name = models.CharField(max_length=256, unique=True)
   # Job creator
   creator = models.ForeignKey(User, null=True)
   # Date created
