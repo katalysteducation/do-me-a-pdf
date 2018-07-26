@@ -75,7 +75,7 @@ def unpack_collection_zip(job_id):
     shutil.rmtree(temp)
 
 def unpack_zip(into, path):
-  p = subprocess.Popen(['/usr/bin/unzip', '-qq', path, '-o', '-d', into], stderr=subprocess.PIPE)
+  p = subprocess.Popen(['/usr/bin/unzip', '-qqo', path, '-d', into], stderr=subprocess.PIPE)
   out, err = p.communicate()
   if p.returncode != 0:
     raise RuntimeError(str(err, 'utf-8'))
