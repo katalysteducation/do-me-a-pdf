@@ -15,14 +15,14 @@ ALLOWED_HOSTS = _cfg['allowed_hosts']
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': _cfg['database']['name'],
-    'USER': _cfg['database']['user'],
-    'PASSWORD': _cfg['database']['password'],
-    'HOST': _cfg['database'].get('host', 'localhost'),
-    'PORT': _cfg['database'].get('port', ''),
-  }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': _cfg['database']['name'],
+        'USER': _cfg['database']['user'],
+        'PASSWORD': _cfg['database']['password'],
+        'HOST': _cfg['database'].get('host', 'localhost'),
+        'PORT': _cfg['database'].get('port', ''),
+    },
 }
 
 ADMINS = _cfg['admins']
